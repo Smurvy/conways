@@ -1,6 +1,7 @@
 import random
 import os
 import time
+import math
 
 def to_binary_string(arr: bool) -> str:
     if(len(arr) == 1):
@@ -77,7 +78,6 @@ def generate_frame(arr):
             
     return arr
                 
-arr = [[random_bool() for x in range(100)] for x in range(25)]
 
 
 
@@ -97,14 +97,97 @@ def mask_arr(arr):
         local_arr.append(list(map(mask_val,x)))
     return local_arr
 
+def to_arr_known(seed: str,width: int, height: int):
+    if len(seed) != width*height:
+        return "this seed does not match the number of elements in your array!"
+    
+    my_arr = []
+    temp_list = []
 
-print(seed(arr))
-print(len(seed(arr)))
+    for i in range(height):
+
+        temp_list = []
+
+        # need these values on first iteration, can't cut them
+        if i != 0:
+            seed = seed[width:]
+        my_arr.append(temp_list)
+
+        
+        for j in range(width):
+            temp_list.append(True if seed[j:j+1] == '1' else False)
+           
+
+            
+    return my_arr
+
+
+def to_arr_known_uncompress(seed: str,width: int, height: int):
+    if len(seed) != width*height:
+        return "this seed does not match the number of elements in your array!"
+    
+    my_arr = []
+    for i in range(height):
+
+        temp_list = []
+
+        # need these values on first iteration, can't cut them
+        if i != 0:
+            seed = seed[width:]
+        
+
+        
+        for j in range(width):
+            my_arr.append([True if seed[j:j+1] == '1' else False for x in range(width)])
+           
+    return my_arr
+
+
+def to_arr_bin(seed: str):
+    dimension = math.ceil(math.sqrt(len(seed)))
+    target_len = dimension * dimension
+
+    for i in range(target_len - len(seed)):
+        seed = seed + "0"
+        # maybe??
+        #  seed = seed + str(int(random_bool()))
+
+    return to_arr_known(seed,dimension,dimension)
+
+def to_arr_bin_uncompress(seed: str):
+    dimension = math.ceil(math.sqrt(len(seed)))
+    target_len = dimension * dimension
+
+    for i in range(target_len - len(seed)):
+        seed = seed + "0"
+        # maybe??
+        #  seed = seed + str(int(random_bool()))
+
+    return to_arr_known_uncompress(seed,dimension,dimension)
+
+
+def to_arr(seed: int):
+    
+    num = str(bin(seed))[3:]
+
+    return to_arr_bin(num)
+
+def to_arr_uncompress(seed: int):
+    num = str(bin(seed))[3:]
+
+    return to_arr_bin_uncompress(num)
+
+arr = to_arr_uncompress(random.randrange(10000000000,99999999999))
+
+
 while True:
     pprint(mask_arr(arr))
     arr = generate_frame(arr)
+
     time.sleep(0.1)
     os.system("clear")
+
+
 
 
 
